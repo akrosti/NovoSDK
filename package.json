@@ -11,5 +11,9 @@
     "url": "git+https://github.com/akrosti/NovoSDK.git"
   },
   "author": "Joshua Garcia Obando",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akrosti/NovoSDK/issues"
+  },
+  "homepage": "https://github.com/akrosti/NovoSDK#readme"
 }

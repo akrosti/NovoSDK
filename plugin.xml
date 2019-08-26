@@ -11,11 +11,13 @@
    </js-module>
    
    <platform name="android">
+
       <config-file parent="/*" target="res/xml/config.xml">
          <feature name="novosdk">
             <param name="android-package" value="cordova.plugin.novosdk.novosdk" />
          </feature>
       </config-file>
+   
       <config-file parent="/*" target="AndroidManifest.xml" />
       
       <source-file src="src/android/novosdk.java" target-dir="src/cordova/plugin/novosdk/novosdk" />
