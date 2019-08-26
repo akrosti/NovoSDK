@@ -17,6 +17,11 @@
          </feature>
       </config-file>
       <config-file parent="/*" target="AndroidManifest.xml" />
+      
       <source-file src="src/android/novosdk.java" target-dir="src/cordova/plugin/novosdk/novosdk" />
+
+      <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
+        
+      <resource-file src="src/android/tokenizationlib.aar" target="libs/tokenizationlib.aar" />
    </platform>
 </plugin>
