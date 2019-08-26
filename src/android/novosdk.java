@@ -7,9 +7,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * This class echoes a string called from JavaScript.
- */
+import com.novopayment.tokenizationlib.Dominian.Model.Configuration.DataConfiguration;
+import com.novopayment.tokenizationlib.Dominian.Model.ResponseTokenization;
+import com.novopayment.tokenizationlib.TokenizationVisa;
+import com.novopayment.tokenizationlib.TokenizationVisaCallback;
+
 public class novosdk extends CordovaPlugin {
 
     @Override
@@ -17,6 +19,11 @@ public class novosdk extends CordovaPlugin {
         if (action.equals("test")) {
             String message = args.getString(0);
             this.test(message, callbackContext);
+            return true;
+        }
+        if (action.equals("enrollDeviceVisa")) {
+            String message = args.getString(0);
+            this.enrollDeviceVisa(message, callbackContext);
             return true;
         }
         return false;
@@ -29,5 +36,23 @@ public class novosdk extends CordovaPlugin {
         } else {
             callbackContext.error("Expected one non-empty string argument.");
         }
+    }
+
+    private void enrollDeviceVisa(String message, CallbackContext callbackContext) {
+        
+        DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
+
+        TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+        tokenizationVisa.enrollDeviceVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
+            @Override
+            public void onSuccessResponse(ResponseTokenization responseTokenization) {
+                callbackContext.success(responseTokenization.toString());
+            }
+
+            @Override
+            public void onFailedResponse(ResponseTokenization responseTokenization) {
+                callbackContext.error(responseTokenization.toString());
+            }
+        }); 
     }
 }
