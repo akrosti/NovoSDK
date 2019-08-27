@@ -26,37 +26,37 @@ public class novosdk extends CordovaPlugin {
         }
 
         if (action.equals("enrollDeviceVisa")) {
-            String message = args.getString(0);
+            //String message = args.getString(0);
             this.enrollDeviceVisa(message, callbackContext);
             return true;
         }
 
         if (action.equals("enrollCardVisa")) {
-            String message = args.getString(0);
+            //String message = args.getString(0);
             this.enrollCardVisa(message, callbackContext);
             return true;
         }
 
         if (action.equals("getContentCard")) {
-            String message = args.getString(0);
+            //String message = args.getString(0);
             this.getContentCard(message, callbackContext);
             return true;
         }
 
         if (action.equals("lifecycleManagerTokenVisa")) {
-            String message = args.getString(0);
+            //String message = args.getString(0);
             this.lifecycleManagerTokenVisa(message, callbackContext);
             return true;
         }
 
         if (action.equals("selectCardVisa")) {
-            String message = args.getString(0);
+            //String message = args.getString(0);
             this.selectCardVisa(message, callbackContext);
             return true;
         }
 
         if (action.equals("getTransactionHistory")) {
-            String message = args.getString(0);
+            //String message = args.getString(0);
             this.getTransactionHistory(message, callbackContext);
             return true;
         }
@@ -73,22 +73,32 @@ public class novosdk extends CordovaPlugin {
         }
     }
 
-    private void enrollDeviceVisa(String message, CallbackContext callbackContext) {
+    private void enrollDeviceVisa(JSONArray message, CallbackContext callbackContext) {
         
         try {
 
-            DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
+            JSONObject param = message.getJSONObject(0);
+
+            DataConfiguration dataConfiguration = new DataConfiguration(
+                param.getString("clientID"),
+                null, 
+                null, 
+                new UserInfo(
+                        param.getJSONObject("UserInfo").getString("tagpay"), 
+                        param.getJSONObject("UserInfo").getString("correo"),
+                        null), 
+                null);
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollDeviceVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.success(responseTokenization.toString());
+                    callbackContext.success(responseTokenization.getParametersTokenization().getClientWalletId());
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.error(responseTokenization.toString());
+                    callbackContext.error(String.format("%s-%s", responseTokenization.getCode(), responseTokenization.getMessage()));
                 }
             }); 
         } catch (Exception ex) {
@@ -96,7 +106,7 @@ public class novosdk extends CordovaPlugin {
         }        
     }
 
-    private void enrollCardVisa(String message, CallbackContext callbackContext) {
+    private void enrollCardVisa(JSONArray message, CallbackContext callbackContext) {
         
         try {
 
@@ -119,7 +129,7 @@ public class novosdk extends CordovaPlugin {
         } 
     }
 
-    private void getContentCard(String message, CallbackContext callbackContext) {
+    private void getContentCard(JSONArray message, CallbackContext callbackContext) {
 
         try {
 
@@ -143,7 +153,7 @@ public class novosdk extends CordovaPlugin {
         } 
     }
 
-    private void lifecycleManagerTokenVisa(String message, CallbackContext callbackContext) {
+    private void lifecycleManagerTokenVisa(JSONArray message, CallbackContext callbackContext) {
 
         try {
 
@@ -166,7 +176,7 @@ public class novosdk extends CordovaPlugin {
         } 
     }
 
-    private void selectCardVisa(String message, CallbackContext callbackContext) {
+    private void selectCardVisa(JSONArray message, CallbackContext callbackContext) {
 
         try {            
 
@@ -191,7 +201,7 @@ public class novosdk extends CordovaPlugin {
         } 
     }
 
-    private void getTransactionHistory(String message, CallbackContext callbackContext) {
+    private void getTransactionHistory(JSONArray message, CallbackContext callbackContext) {
 
         try {
 
