@@ -27,37 +27,37 @@ public class novosdk extends CordovaPlugin {
 
         if (action.equals("enrollDeviceVisa")) {
             //String message = args.getString(0);
-            this.enrollDeviceVisa(message, callbackContext);
+            this.enrollDeviceVisa(args, callbackContext);
             return true;
         }
 
         if (action.equals("enrollCardVisa")) {
             //String message = args.getString(0);
-            this.enrollCardVisa(message, callbackContext);
+            this.enrollCardVisa(args, callbackContext);
             return true;
         }
 
         if (action.equals("getContentCard")) {
             //String message = args.getString(0);
-            this.getContentCard(message, callbackContext);
+            this.getContentCard(args, callbackContext);
             return true;
         }
 
         if (action.equals("lifecycleManagerTokenVisa")) {
             //String message = args.getString(0);
-            this.lifecycleManagerTokenVisa(message, callbackContext);
+            this.lifecycleManagerTokenVisa(args, callbackContext);
             return true;
         }
 
         if (action.equals("selectCardVisa")) {
             //String message = args.getString(0);
-            this.selectCardVisa(message, callbackContext);
+            this.selectCardVisa(args, callbackContext);
             return true;
         }
 
         if (action.equals("getTransactionHistory")) {
             //String message = args.getString(0);
-            this.getTransactionHistory(message, callbackContext);
+            this.getTransactionHistory(args, callbackContext);
             return true;
         }
 
