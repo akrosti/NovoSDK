@@ -84,8 +84,8 @@ public class novosdk extends CordovaPlugin {
                 null, 
                 null, 
                 new UserInfo(
-                        param.getJSONObject("UserInfo").getString("tagpay"), 
-                        param.getJSONObject("UserInfo").getString("correo"),
+                        param.getJSONObject("UserInfo").getString("userID"), 
+                        param.getJSONObject("UserInfo").getString("email"),
                         null), 
                 null);
 
