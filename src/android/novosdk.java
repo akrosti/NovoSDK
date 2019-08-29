@@ -7,9 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
 import android.support.v4.app.FragmentManager;
-import com.novopayment.tokenizationlib.Dominian.Model.Configuration.DataConfiguration;
-import com.novopayment.tokenizationlib.Dominian.Model.Configuration.UserInfo;
+import com.novopayment.tokenizationlib.Dominian.Model.Configuration.*;
 import com.novopayment.tokenizationlib.Dominian.Model.ResponseTokenization;
 import com.novopayment.tokenizationlib.TokenizationVisa;
 import com.novopayment.tokenizationlib.TokenizationVisaCallback;
@@ -76,29 +76,34 @@ public class novosdk extends CordovaPlugin {
     private void enrollDeviceVisa(JSONArray message, CallbackContext callbackContext) {
         
         try {
+            Gson gson = new Gson();
+            String result = "";
 
-            JSONObject param = message.getJSONObject(0);
+            JSONObject data = message.getJSONObject(0);
+            JSONObject userInfo = data.getJSONObject("UserInfo");
 
             DataConfiguration dataConfiguration = new DataConfiguration(
-                param.getString("clientID"),
+                data.getString("clientID"),
                 null, 
                 null, 
                 new UserInfo(
-                        param.getJSONObject("UserInfo").getString("userID"), 
-                        param.getJSONObject("UserInfo").getString("email"),
-                        null), 
+                    userInfo.getString("userID"), 
+                    userInfo.getString("email"),
+                    null), 
                 null);
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollDeviceVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.success(responseTokenization.getParametersTokenization().getClientWalletId());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.error(String.format("%s-%s", responseTokenization.getCode(), responseTokenization.getMessage()));
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.error(result);
                 }
             }); 
         } catch (Exception ex) {
@@ -109,19 +114,45 @@ public class novosdk extends CordovaPlugin {
     private void enrollCardVisa(JSONArray message, CallbackContext callbackContext) {
         
         try {
+            Gson gson = new Gson();
+            String result = "";
 
-            DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
+            JSONObject data = message.getJSONObject(0);
+            JSONObject userInfo = data.getJSONObject("UserInfo");
+            JSONObject panCardData = data.getJSONObject("PanCardData");
+            JSONObject expirationDate = panCardData.getJSONObject("ExpirationDate");
+
+            DataConfiguration dataConfiguration = new DataConfiguration(
+                data.getString("clientID"),
+                null, 
+                new PanCardData(
+                    panCardData.getString("accountNumber"),
+                    panCardData.getString("name"),
+                    panCardData.getString("cvv2"),
+                        new ExpirationDate(
+                            expirationDate.getString("month"),
+                            expirationDate.getString("year")
+                        )   
+                ), 
+                new UserInfo(
+                    userInfo.getString("userID"), 
+                    userInfo.getString("email"),
+                    userInfo.getString("clientWalletAccountId")
+                    ),
+                null);
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollCardVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.success(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.error(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.error(result);
                 }
             });
         } catch (Exception ex) {
@@ -132,6 +163,8 @@ public class novosdk extends CordovaPlugin {
     private void getContentCard(JSONArray message, CallbackContext callbackContext) {
 
         try {
+            Gson gson = new Gson();
+            String result = "";
 
             DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
             String requiredContent = "";
@@ -140,12 +173,14 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.getContentCard(this.cordova.getActivity(), dataConfiguration, requiredContent, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.success(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.error(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.error(result);
                 }
             });
         } catch (Exception ex) {
@@ -156,6 +191,8 @@ public class novosdk extends CordovaPlugin {
     private void lifecycleManagerTokenVisa(JSONArray message, CallbackContext callbackContext) {
 
         try {
+            Gson gson = new Gson();
+            String result = "";
 
             DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
 
@@ -163,12 +200,14 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.lifecycleManagerTokenVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.success(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.error(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.error(result);
                 }
             }); 
         } catch (Exception ex) {
@@ -179,6 +218,8 @@ public class novosdk extends CordovaPlugin {
     private void selectCardVisa(JSONArray message, CallbackContext callbackContext) {
 
         try {            
+            Gson gson = new Gson();
+            String result = "";
 
             DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
             int position = 0;
@@ -188,12 +229,14 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.selectCardVisa(this.cordova.getActivity(), dataConfiguration, position, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.success(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.error(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.error(result);
                 }
             }); 
         } catch (Exception ex) {
@@ -204,6 +247,8 @@ public class novosdk extends CordovaPlugin {
     private void getTransactionHistory(JSONArray message, CallbackContext callbackContext) {
 
         try {
+            Gson gson = new Gson();
+            String result = "";
 
             DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
 
@@ -211,12 +256,14 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.getTransactionHistory(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.success(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    callbackContext.error(responseTokenization.toString());
+                    result = gson.toJson(responseTokenization);
+                    callbackContext.error(result);
                 }
             });
         } catch (Exception ex) {
