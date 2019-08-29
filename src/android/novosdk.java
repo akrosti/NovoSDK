@@ -83,7 +83,8 @@ public class novosdk extends CordovaPlugin {
                     userInfo.getString("userID"), 
                     userInfo.getString("email"),
                     null), 
-                null);
+                null
+            );
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollDeviceVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
@@ -131,7 +132,8 @@ public class novosdk extends CordovaPlugin {
                     userInfo.getString("email"),
                     userInfo.getString("clientWalletAccountId")
                     ),
-                null);
+                new ArrayList()
+            );
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollCardVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
