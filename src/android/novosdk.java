@@ -26,37 +26,31 @@ public class novosdk extends CordovaPlugin {
         }
 
         if (action.equals("enrollDeviceVisa")) {
-            //String message = args.getString(0);
             this.enrollDeviceVisa(args, callbackContext);
             return true;
         }
 
         if (action.equals("enrollCardVisa")) {
-            //String message = args.getString(0);
             this.enrollCardVisa(args, callbackContext);
             return true;
         }
 
         if (action.equals("getContentCard")) {
-            //String message = args.getString(0);
             this.getContentCard(args, callbackContext);
             return true;
         }
 
         if (action.equals("lifecycleManagerTokenVisa")) {
-            //String message = args.getString(0);
             this.lifecycleManagerTokenVisa(args, callbackContext);
             return true;
         }
 
         if (action.equals("selectCardVisa")) {
-            //String message = args.getString(0);
             this.selectCardVisa(args, callbackContext);
             return true;
         }
 
         if (action.equals("getTransactionHistory")) {
-            //String message = args.getString(0);
             this.getTransactionHistory(args, callbackContext);
             return true;
         }
@@ -76,8 +70,7 @@ public class novosdk extends CordovaPlugin {
     private void enrollDeviceVisa(JSONArray message, CallbackContext callbackContext) {
         
         try {
-            Gson gson = new Gson();
-            String result = "";
+            Gson gson = new Gson();            
 
             JSONObject data = message.getJSONObject(0);
             JSONObject userInfo = data.getJSONObject("UserInfo");
@@ -96,13 +89,13 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.enrollDeviceVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
             }); 
@@ -114,8 +107,7 @@ public class novosdk extends CordovaPlugin {
     private void enrollCardVisa(JSONArray message, CallbackContext callbackContext) {
         
         try {
-            Gson gson = new Gson();
-            String result = "";
+            Gson gson = new Gson();            
 
             JSONObject data = message.getJSONObject(0);
             JSONObject userInfo = data.getJSONObject("UserInfo");
@@ -145,13 +137,13 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.enrollCardVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
             });
@@ -163,8 +155,7 @@ public class novosdk extends CordovaPlugin {
     private void getContentCard(JSONArray message, CallbackContext callbackContext) {
 
         try {
-            Gson gson = new Gson();
-            String result = "";
+            Gson gson = new Gson();            
 
             DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
             String requiredContent = "";
@@ -173,13 +164,13 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.getContentCard(this.cordova.getActivity(), dataConfiguration, requiredContent, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
             });
@@ -191,8 +182,7 @@ public class novosdk extends CordovaPlugin {
     private void lifecycleManagerTokenVisa(JSONArray message, CallbackContext callbackContext) {
 
         try {
-            Gson gson = new Gson();
-            String result = "";
+            Gson gson = new Gson();            
 
             DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
 
@@ -200,13 +190,13 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.lifecycleManagerTokenVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
             }); 
@@ -219,7 +209,6 @@ public class novosdk extends CordovaPlugin {
 
         try {            
             Gson gson = new Gson();
-            String result = "";
 
             DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
             int position = 0;
@@ -229,13 +218,13 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.selectCardVisa(this.cordova.getActivity(), dataConfiguration, position, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
             }); 
@@ -248,7 +237,6 @@ public class novosdk extends CordovaPlugin {
 
         try {
             Gson gson = new Gson();
-            String result = "";
 
             DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
 
@@ -256,13 +244,13 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.getTransactionHistory(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.success(result);
                 }
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    result = gson.toJson(responseTokenization);
+                    String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
             });
