@@ -104,6 +104,7 @@ public class novosdk extends CordovaPlugin {
             JSONObject json = message.getJSONObject(0);            
 
             DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
+            dataConfiguration.setCards(new ArrayList());
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollCardVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
