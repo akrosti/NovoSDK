@@ -73,19 +73,9 @@ public class novosdk extends CordovaPlugin {
         try {
             Gson gson = new Gson();            
 
-            JSONObject data = message.getJSONObject(0);
-            JSONObject userInfo = data.getJSONObject("UserInfo");
+            JSONObject json = message.getJSONObject(0);            
 
-            DataConfiguration dataConfiguration = new DataConfiguration(
-                data.getString("clientID"),
-                null, 
-                null, 
-                new UserInfo(
-                    userInfo.getString("userID"), 
-                    userInfo.getString("email"),
-                    null), 
-                null
-            );
+            DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollDeviceVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
@@ -111,30 +101,9 @@ public class novosdk extends CordovaPlugin {
         try {
             Gson gson = new Gson();            
 
-            JSONObject data = message.getJSONObject(0);
-            JSONObject userInfo = data.getJSONObject("UserInfo");
-            JSONObject panCardData = data.getJSONObject("PanCardData");
-            JSONObject expirationDate = panCardData.getJSONObject("ExpirationDate");
+            JSONObject json = message.getJSONObject(0);            
 
-            DataConfiguration dataConfiguration = new DataConfiguration(
-                data.getString("clientID"),
-                null, 
-                new PanCardData(
-                    panCardData.getString("accountNumber"),
-                    panCardData.getString("name"),
-                    panCardData.getString("cvv2"),
-                        new ExpirationDate(
-                            expirationDate.getString("month"),
-                            expirationDate.getString("year")
-                        )   
-                ), 
-                new UserInfo(
-                    userInfo.getString("userID"), 
-                    userInfo.getString("email"),
-                    userInfo.getString("clientWalletAccountId")
-                    ),
-                new ArrayList()
-            );
+            DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollCardVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
@@ -160,8 +129,11 @@ public class novosdk extends CordovaPlugin {
         try {
             Gson gson = new Gson();            
 
-            DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
-            String requiredContent = "";
+            JSONObject json = message.getJSONObject(0);            
+
+            DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
+
+            final String requiredContent = "CONTENT_CARD_KEY";
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.getContentCard(this.cordova.getActivity(), dataConfiguration, requiredContent, new TokenizationVisaCallback.VTSCallback() {
@@ -187,7 +159,9 @@ public class novosdk extends CordovaPlugin {
         try {
             Gson gson = new Gson();            
 
-            DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
+            JSONObject json = message.getJSONObject(0);            
+
+            DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.lifecycleManagerTokenVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
@@ -213,7 +187,10 @@ public class novosdk extends CordovaPlugin {
         try {            
             Gson gson = new Gson();
 
-            DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
+            JSONObject json = message.getJSONObject(0);            
+
+            DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
+
             int position = 0;
             FragmentManager supportFragmentManager= null;
 
@@ -241,7 +218,9 @@ public class novosdk extends CordovaPlugin {
         try {
             Gson gson = new Gson();
 
-            DataConfiguration dataConfiguration = new DataConfiguration("", null, null, null, null);
+            JSONObject json = message.getJSONObject(0);            
+
+            DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.getTransactionHistory(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
