@@ -14,6 +14,7 @@ import com.novopayment.tokenizationlib.Dominian.Model.Configuration.*;
 import com.novopayment.tokenizationlib.Dominian.Model.ResponseTokenization;
 import com.novopayment.tokenizationlib.TokenizationVisa;
 import com.novopayment.tokenizationlib.TokenizationVisaCallback;
+import com.novopayment.tokenizationlib.Dominian.Model.cardData.DataTokenizationCard;
 
 public class novosdk extends CordovaPlugin {
 
@@ -53,6 +54,11 @@ public class novosdk extends CordovaPlugin {
 
         if (action.equals("getTransactionHistory")) {
             this.getTransactionHistory(args, callbackContext);
+            return true;
+        }
+
+        if (action.equals("getTokenizationCards")) {
+            this.getTokenizationCards(callbackContext);
             return true;
         }
 
@@ -239,6 +245,22 @@ public class novosdk extends CordovaPlugin {
             });
         } catch (Exception ex) {
             callbackContext.error("getTransactionHistory=> " + ex);
+        } 
+    }
+
+    private void getTokenizationCards(CallbackContext callbackContext) {
+
+        try {
+            Gson gson = new Gson();
+
+            TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+            ArrayList<DataTokenizationCard> cardsList = tokenizationVisa.getTokenizationCards();
+            
+            String result = gson.toJson(cardsList);
+            callbackContext.success(result);
+
+        } catch (Exception ex) {
+            callbackContext.error("getTokenizationCards=> " + ex);
         } 
     }
 }

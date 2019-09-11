@@ -27,3 +27,7 @@ module.exports.selectCardVisa = function (arg0, success, error) {
 module.exports.getTransactionHistory = function (arg0, success, error) {
     exec(success, error, 'novosdk', 'getTransactionHistory', [arg0]);
 };
+
+module.exports.getTokenizationCards = function (arg0, success, error) {
+    exec(success, error, 'novosdk', 'getTokenizationCards', [arg0]);
+};
