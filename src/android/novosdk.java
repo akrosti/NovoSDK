@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentActivity;
 import com.novopayment.tokenizationlib.Dominian.Model.Configuration.*;
 import com.novopayment.tokenizationlib.Dominian.Model.ResponseTokenization;
 import com.novopayment.tokenizationlib.TokenizationVisa;
@@ -199,7 +200,9 @@ public class novosdk extends CordovaPlugin {
             DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
 
             int position = 0;
-            FragmentManager supportFragmentManager= null;
+
+            FragmentActivity activity = (FragmentActivity) this.cordova.getActivity();
+            FragmentManager supportFragmentManager= activity.getSupportFragmentManager();
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.selectCardVisa(this.cordova.getActivity(), dataConfiguration, position, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
