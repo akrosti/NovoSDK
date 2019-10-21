@@ -25,5 +25,10 @@
       <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
         
       <resource-file src="src/android/tokenizationlib.aar" target="libs/tokenizationlib.aar" />
+
+      <resource-file src="src/android/res/drawable-hdpi/cardvisa.jpg" target="res/drawable-hdpi/cardvisa.jpg" /> 
+      <resource-file src="src/android/res/drawable-mdpi/cardvisa.jpg" target="res/drawable-mdpi/cardvisa.jpg" /> 
+      <resource-file src="src/android/res/drawable-xhdpi/cardvisa.jpg" target="res/drawable-xhdpi/cardvisa.jpg" /> 
+      <resource-file src="src/android/res/drawable-xxhdpi/cardvisa.jpg" target="res/drawable-xxhdpi/cardvisa.jpg" />
    </platform>
 </plugin>
