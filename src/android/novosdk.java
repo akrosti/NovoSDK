@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentActivity;
-import com.novopayment.tokenizationlib.Dominian.Model.Configuration.*;
-import com.novopayment.tokenizationlib.Dominian.Model.ResponseTokenization;
+import com.novopayment.tokenizationlib.dominian.model.Configuration.*;
+import com.novopayment.tokenizationlib.dominian.model.ResponseTokenization;
 import com.novopayment.tokenizationlib.TokenizationVisa;
 import com.novopayment.tokenizationlib.TokenizationVisaCallback;
-import com.novopayment.tokenizationlib.Dominian.Model.cardData.DataTokenizationCard;
+import com.novopayment.tokenizationlib.dominian.model.cardData.DataTokenizationCard;
 
 public class novosdk extends CordovaPlugin {
 
