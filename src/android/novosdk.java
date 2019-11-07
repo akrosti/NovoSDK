@@ -16,15 +16,15 @@ import com.novopayment.tokenizationlib.dominian.model.ResponseTokenization;
 import com.novopayment.tokenizationlib.TokenizationVisa;
 import com.novopayment.tokenizationlib.TokenizationVisaCallback;
 import com.novopayment.tokenizationlib.dominian.model.cardData.DataTokenizationCard;
+import com.betotepresta.beto.cr.MainActivity;
 
 public class novosdk extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         
-        if (action.equals("test")) {
-            String message = args.getString(0);
-            this.test(message, callbackContext);
+        if (action.equals("test")) {            
+            this.test(args, callbackContext);
             return true;
         }
 
@@ -66,13 +66,22 @@ public class novosdk extends CordovaPlugin {
         return false;
     }
 
-    private void test(String message, CallbackContext callbackContext) {
+    private void test(JSONArray message, CallbackContext callbackContext) {
 
-        if (message != null && message.length() > 0) {
-            callbackContext.success("test success!");
-        } else {
-            callbackContext.error("Expected one non-empty string argument.");
-        }
+        try {
+            Gson gson = new Gson();            
+
+            JSONObject json = message.getJSONObject(0);            
+
+            DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
+
+            String result = gson.toJson(dataConfiguration);
+
+            callbackContext.success(result);
+
+        } catch (Exception ex) {
+            callbackContext.error("enrollDeviceVisa=> " + ex);
+        }    
     }
 
     private void enrollDeviceVisa(JSONArray message, CallbackContext callbackContext) {
@@ -83,6 +92,10 @@ public class novosdk extends CordovaPlugin {
             JSONObject json = message.getJSONObject(0);            
 
             DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
+            dataConfiguration.setTokenData(null);
+            dataConfiguration.setPanCardData(null);
+            dataConfiguration.setCards(null);
+            dataConfiguration.getUserInfo().setClientWalletAccountId(null);        
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.enrollDeviceVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
@@ -201,8 +214,7 @@ public class novosdk extends CordovaPlugin {
 
             int position = 0;
 
-            FragmentActivity activity = (FragmentActivity) this.cordova.getActivity();
-            FragmentManager supportFragmentManager= activity.getSupportFragmentManager();
+            FragmentManager supportFragmentManager= MainActivity.getSupportManager();
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.selectCardVisa(this.cordova.getActivity(), dataConfiguration, position, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
