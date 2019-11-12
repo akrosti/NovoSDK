@@ -9,14 +9,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentActivity;
+
+import android.app.FragmentManager;
 import com.novopayment.tokenizationlib.dominian.model.Configuration.*;
 import com.novopayment.tokenizationlib.dominian.model.ResponseTokenization;
 import com.novopayment.tokenizationlib.TokenizationVisa;
 import com.novopayment.tokenizationlib.TokenizationVisaCallback;
 import com.novopayment.tokenizationlib.dominian.model.cardData.DataTokenizationCard;
-import com.betotepresta.beto.cr.MainActivity;
+//////////////////////////////////////
+//DESCOMENTAR SEGUN EL APP A UTILIZAR
+/////////////////////////////////////
+//import com.betotepresta.beto.cr.MainActivity;
+//import com.multimoney.multimoney.cr.MainActivity;
+//import com.impulsat.impulsat.gt.MainActivity;
 
 public class novosdk extends CordovaPlugin {
 
@@ -214,7 +219,7 @@ public class novosdk extends CordovaPlugin {
 
             int position = 0;
 
-            FragmentManager supportFragmentManager= MainActivity.getSupportManager();
+            FragmentManager supportFragmentManager= ((MainActivity) this.cordova.getActivity()).getSupportManager();
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.selectCardVisa(this.cordova.getActivity(), dataConfiguration, position, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
@@ -269,7 +274,7 @@ public class novosdk extends CordovaPlugin {
             Gson gson = new Gson();
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
-            ArrayList<DataTokenizationCard> cardsList = tokenizationVisa.getTokenizationCards();
+            ArrayList<DataTokenizationCard> cardsList = tokenizationVisa.getTokenizationCards(this.cordova.getActivity());
             
             String result = gson.toJson(cardsList);
             callbackContext.success(result);
