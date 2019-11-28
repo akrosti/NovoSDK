@@ -31,3 +31,7 @@ module.exports.getTransactionHistory = function (arg0, success, error) {
 module.exports.getTokenizationCards = function (arg0, success, error) {
     exec(success, error, 'novosdk', 'getTokenizationCards', [arg0]);
 };
+
+module.exports.clearNotification = function (arg0, success, error) {
+    exec(success, error, 'novosdk', 'clearNotification', [arg0]);
+};

@@ -11,11 +11,19 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 
 import android.app.FragmentManager;
-import com.novopayment.tokenizationlib.dominian.model.Configuration.*;
-import com.novopayment.tokenizationlib.dominian.model.ResponseTokenization;
+import com.novopayment.tokenizationlib.domain.models.configuration.*;
+import com.novopayment.tokenizationlib.domain.models.ResponseTokenization;
 import com.novopayment.tokenizationlib.TokenizationVisa;
 import com.novopayment.tokenizationlib.TokenizationVisaCallback;
-import com.novopayment.tokenizationlib.dominian.model.cardData.DataTokenizationCard;
+import com.novopayment.tokenizationlib.domain.models.cardData.DataTokenizationCard;
+import com.novopayment.tokenizationlib.payment.VcpcsService;
+import android.nfc.cardemulation.CardEmulation;
+import android.content.*;
+//////////////////////////////////////
+//PARA VER LOGS EN ANDROID STUDIO
+//import android.util.Log;
+//Uso=> Log.d("VTS", "SelectSDK");
+/////////////////////////////////////
 //////////////////////////////////////
 //DESCOMENTAR SEGUN EL APP A UTILIZAR
 /////////////////////////////////////
@@ -24,6 +32,8 @@ import com.novopayment.tokenizationlib.dominian.model.cardData.DataTokenizationC
 //import com.impulsat.impulsat.gt.MainActivity;
 
 public class novosdk extends CordovaPlugin {
+    
+    private BroadcastReceiver receiver= null;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -40,11 +50,6 @@ public class novosdk extends CordovaPlugin {
 
         if (action.equals("enrollCardVisa")) {
             this.enrollCardVisa(args, callbackContext);
-            return true;
-        }
-
-        if (action.equals("getContentCard")) {
-            this.getContentCard(args, callbackContext);
             return true;
         }
 
@@ -68,7 +73,20 @@ public class novosdk extends CordovaPlugin {
             return true;
         }
 
+        if (action.equals("clearNotification")) {
+            this.clearNotification(callbackContext);
+            return true;
+        }
+
         return false;
+    }
+
+    public void setDefaultWallet() {
+        Intent intent = new Intent();
+        intent.setAction(CardEmulation.ACTION_CHANGE_DEFAULT);
+        intent.putExtra(CardEmulation.EXTRA_SERVICE_COMPONENT, new ComponentName(this.cordova.getActivity().getApplicationContext() , VcpcsService.class));
+        intent.putExtra(CardEmulation.EXTRA_CATEGORY, CardEmulation.CATEGORY_PAYMENT);
+        this.cordova.getActivity().startActivity(intent);
     }
 
     private void test(JSONArray message, CallbackContext callbackContext) {
@@ -95,6 +113,7 @@ public class novosdk extends CordovaPlugin {
             Gson gson = new Gson();            
 
             JSONObject json = message.getJSONObject(0);            
+            FragmentManager supportFragmentManager= ((MainActivity) this.cordova.getActivity()).getSupportManager();
 
             DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
             dataConfiguration.setTokenData(null);
@@ -106,6 +125,8 @@ public class novosdk extends CordovaPlugin {
             tokenizationVisa.enrollDeviceVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
+                    tokenizationVisa.getReceiver(supportFragmentManager);
+
                     String result = gson.toJson(responseTokenization);
                     callbackContext.success(result);
                 }
@@ -150,36 +171,6 @@ public class novosdk extends CordovaPlugin {
         } 
     }
 
-    private void getContentCard(JSONArray message, CallbackContext callbackContext) {
-
-        try {
-            Gson gson = new Gson();            
-
-            JSONObject json = message.getJSONObject(0);            
-
-            DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
-
-            final String requiredContent = "CONTENT_CARD_KEY";
-
-            TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
-            tokenizationVisa.getContentCard(this.cordova.getActivity(), dataConfiguration, requiredContent, new TokenizationVisaCallback.VTSCallback() {
-                @Override
-                public void onSuccessResponse(ResponseTokenization responseTokenization) {
-                    String result = gson.toJson(responseTokenization);
-                    callbackContext.success(result);
-                }
-
-                @Override
-                public void onFailedResponse(ResponseTokenization responseTokenization) {
-                    String result = gson.toJson(responseTokenization);
-                    callbackContext.error(result);
-                }
-            });
-        } catch (Exception ex) {
-            callbackContext.error("getContentCard=> " + ex);
-        } 
-    }
-
     private void lifecycleManagerTokenVisa(JSONArray message, CallbackContext callbackContext) {
 
         try {
@@ -211,6 +202,14 @@ public class novosdk extends CordovaPlugin {
     private void selectCardVisa(JSONArray message, CallbackContext callbackContext) {
 
         try {            
+
+            if (!((MainActivity) this.cordova.getActivity()).getBanderaSelectCard())
+            {
+                return;
+            }
+            
+            ((MainActivity) this.cordova.getActivity()).setBanderaSelectCard(false);
+
             Gson gson = new Gson();
 
             JSONObject json = message.getJSONObject(0);            
@@ -222,7 +221,7 @@ public class novosdk extends CordovaPlugin {
             FragmentManager supportFragmentManager= ((MainActivity) this.cordova.getActivity()).getSupportManager();
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
-            tokenizationVisa.selectCardVisa(this.cordova.getActivity(), dataConfiguration, position, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
+            tokenizationVisa.selectCardVisa(this.cordova.getActivity().getApplicationContext(), dataConfiguration, position, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
                     String result = gson.toJson(responseTokenization);
@@ -231,6 +230,7 @@ public class novosdk extends CordovaPlugin {
 
                 @Override
                 public void onFailedResponse(ResponseTokenization responseTokenization) {
+                    ((MainActivity) cordova.getActivity()).setBanderaSelectCard(true);
                     String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
@@ -271,9 +271,17 @@ public class novosdk extends CordovaPlugin {
     private void getTokenizationCards(CallbackContext callbackContext) {
 
         try {
+            setDefaultWallet();
+
             Gson gson = new Gson();
 
+            FragmentManager supportFragmentManager= ((MainActivity) this.cordova.getActivity()).getSupportManager();
+
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+            
+            receiver = tokenizationVisa.getReceiver(supportFragmentManager);
+            tokenizationVisa.registerBroadcastEvents(this.cordova.getActivity(), receiver);
+            tokenizationVisa.registerBroadcastNetworkReceiver((this.cordova.getActivity()));
             ArrayList<DataTokenizationCard> cardsList = tokenizationVisa.getTokenizationCards(this.cordova.getActivity());
             
             String result = gson.toJson(cardsList);
@@ -283,4 +291,24 @@ public class novosdk extends CordovaPlugin {
             callbackContext.error("getTokenizationCards=> " + ex);
         } 
     }
+
+    private void clearNotification(CallbackContext callbackContext) {
+
+        try {
+        
+            Gson gson = new Gson();
+
+            if ( receiver != null )
+            {
+                TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+                tokenizationVisa.clearNotification(this.cordova.getActivity(), receiver);
+            }
+
+            callbackContext.success("ok");
+
+        } catch (Exception ex) {
+            callbackContext.error("clearNotification=> " + ex);
+        } 
+    }
+
 }

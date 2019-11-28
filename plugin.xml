@@ -25,6 +25,7 @@
       <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
         
       <resource-file src="src/android/tokenizationlib.aar" target="libs/tokenizationlib.aar" />
+      <resource-file src="src/android/VisaSensoryBranding.aar" target="libs/VisaSensoryBranding.aar" />
 
       <resource-file src="src/android/res/drawable-hdpi/ic_tagpay.jpg" target="res/drawable-hdpi/ic_tagpay.jpg" /> 
       <resource-file src="src/android/res/drawable-mdpi/ic_tagpay.jpg" target="res/drawable-mdpi/ic_tagpay.jpg" /> 
