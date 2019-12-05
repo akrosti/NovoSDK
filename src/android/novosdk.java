@@ -19,6 +19,7 @@ import com.novopayment.tokenizationlib.domain.models.cardData.DataTokenizationCa
 import com.novopayment.tokenizationlib.payment.VcpcsService;
 import android.nfc.cardemulation.CardEmulation;
 import android.content.*;
+import com.novopayment.tokenizationlib.domain.models.vtsClientConfiguration.VTSClientConfiguration;
 //////////////////////////////////////
 //PARA VER LOGS EN ANDROID STUDIO
 //import android.util.Log;
@@ -136,7 +137,11 @@ public class novosdk extends CordovaPlugin {
                     String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
-            }); 
+            }, new VTSClientConfiguration(
+                "Z3J1cG9nZW50ZQ==",
+                "aHR0cHM6Ly9kLWdydXBvZ2VudGUubm92b3BheW1lbnQubmV0Lw==",
+                "d3NzOi8vZC1ncnVwb2dlbnRlLm5vdm9wYXltZW50Lm5ldC8="
+            )); 
         } catch (Exception ex) {
             callbackContext.error("enrollDeviceVisa=> " + ex);
         }        
