@@ -138,7 +138,9 @@ public class novosdk extends CordovaPlugin {
                     callbackContext.error(result);
                 }
             }, new VTSClientConfiguration(
-                "Z3J1cG9nZW50ZQ==",
+                //"Z3J1cG9nZW50ZQ==", //Beto y MM CR
+                //"Z3J1cG9nZW50ZUdU", //Impulsat
+                //"Z3J1cG9nZW50ZVNW", //MM SV
                 "aHR0cHM6Ly9kLWdydXBvZ2VudGUubm92b3BheW1lbnQubmV0Lw==",
                 "d3NzOi8vZC1ncnVwb2dlbnRlLm5vdm9wYXltZW50Lm5ldC8="
             )); 
@@ -221,12 +223,15 @@ public class novosdk extends CordovaPlugin {
 
             DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
 
-            int position = 0;
+            //int position = 0;
 
             FragmentManager supportFragmentManager= ((MainActivity) this.cordova.getActivity()).getSupportManager();
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
-            tokenizationVisa.selectCardVisa(this.cordova.getActivity().getApplicationContext(), dataConfiguration, position, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
+
+            DataTokenizationCard card = tokenizationVisa.getCardByToken(dataConfiguration.getTokenData().getTokenID(), this.cordova.getActivity().getApplicationContext());
+            
+            tokenizationVisa.selectCardVisa(this.cordova.getActivity().getApplicationContext(), dataConfiguration, card, supportFragmentManager, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
                     String result = gson.toJson(responseTokenization);
