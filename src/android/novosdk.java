@@ -82,6 +82,49 @@ public class novosdk extends CordovaPlugin {
         return false;
     }
 
+    @Override
+    protected void pluginInitialize() {
+        super.pluginInitialize();
+        TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+        FragmentManager supportFragmentManager= ((MainActivity) this.cordova.getActivity()).getSupportManager();
+        receiver = tokenizationVisa.getReceiver(supportFragmentManager);
+    }
+
+    @Override
+    public void onPause(boolean multitasking) {
+        super.onPause(multitasking);
+        
+        try {
+            TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+            tokenizationVisa.unregisterBroadcastEvents(this.cordova.getActivity(),receiver);
+            tokenizationVisa.unregisterBroadcastNetwork(this.cordova.getActivity());
+        }catch(Exception e){
+
+        }
+    }
+
+    @Override
+    public void onResume(boolean multitasking) {
+        super.onResume(multitasking);
+        
+        TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+        tokenizationVisa.registerBroadcastEvents(this.cordova.getActivity(), receiver);
+        tokenizationVisa.registerBroadcastNetworkReceiver((this.cordova.getActivity()));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        
+        try {
+            TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+            tokenizationVisa.unregisterBroadcastEvents(this.cordova.getActivity(),receiver);
+            tokenizationVisa.unregisterBroadcastNetwork(this.cordova.getActivity());
+        }catch(Exception e){
+
+        }
+    }
+
     public void setDefaultWallet() {
         Intent intent = new Intent();
         intent.setAction(CardEmulation.ACTION_CHANGE_DEFAULT);
@@ -141,8 +184,8 @@ public class novosdk extends CordovaPlugin {
                 //"Z3J1cG9nZW50ZQ==", //Beto y MM CR
                 //"Z3J1cG9nZW50ZUdU", //Impulsat
                 //"Z3J1cG9nZW50ZVNW", //MM SV
-                "aHR0cHM6Ly9kLWdydXBvZ2VudGUubm92b3BheW1lbnQubmV0Lw==",
-                "d3NzOi8vZC1ncnVwb2dlbnRlLm5vdm9wYXltZW50Lm5ldC8="
+                "USUARIO",
+                "PASSWORD"
             )); 
         } catch (Exception ex) {
             callbackContext.error("enrollDeviceVisa=> " + ex);
@@ -289,9 +332,6 @@ public class novosdk extends CordovaPlugin {
 
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             
-            receiver = tokenizationVisa.getReceiver(supportFragmentManager);
-            tokenizationVisa.registerBroadcastEvents(this.cordova.getActivity(), receiver);
-            tokenizationVisa.registerBroadcastNetworkReceiver((this.cordova.getActivity()));
             ArrayList<DataTokenizationCard> cardsList = tokenizationVisa.getTokenizationCards(this.cordova.getActivity());
             
             String result = gson.toJson(cardsList);
