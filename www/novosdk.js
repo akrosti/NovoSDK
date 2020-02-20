@@ -35,3 +35,7 @@ module.exports.getTokenizationCards = function (arg0, success, error) {
 module.exports.clearNotification = function (arg0, success, error) {
     exec(success, error, 'novosdk', 'clearNotification', [arg0]);
 };
+
+module.exports.deleteTokensByPan = function (arg0, success, error) {
+    exec(success, error, 'novosdk', 'deleteTokensByPan', [arg0]);
+};

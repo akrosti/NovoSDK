@@ -79,6 +79,11 @@ public class novosdk extends CordovaPlugin {
             return true;
         }
 
+        if (action.equals("deleteTokensByPan")) {
+            this.deleteTokensByPan(args, callbackContext);
+            return true;
+        }
+
         return false;
     }
 
@@ -358,6 +363,33 @@ public class novosdk extends CordovaPlugin {
 
         } catch (Exception ex) {
             callbackContext.error("clearNotification=> " + ex);
+        } 
+    }
+
+    private void deleteTokensByPan( JSONArray message, CallbackContext callbackContext ) {
+
+        try {                  
+            Gson gson = new Gson();
+            JSONObject json = message.getJSONObject(0);            
+
+            String panCard = json.getString("panCard");            
+
+            TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+            tokenizationVisa.deleteTokensByPan(panCard, this.cordova.getActivity(), new TokenizationVisaCallback.VTSCallback() {
+                @Override
+                public void onSuccessResponse(ResponseTokenization responseTokenization) {
+                    String result = gson.toJson(responseTokenization);
+                    callbackContext.success(result);
+                }
+
+                @Override
+                public void onFailedResponse(ResponseTokenization responseTokenization) {
+                    String result = gson.toJson(responseTokenization);
+                    callbackContext.error(result);
+                }
+            });
+        } catch (Exception ex) {
+            callbackContext.error("deleteTokensByPan=> " + ex);
         } 
     }
 
