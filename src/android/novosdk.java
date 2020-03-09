@@ -89,7 +89,7 @@ public class novosdk extends CordovaPlugin {
 
     @Override
     protected void pluginInitialize() {
-        super.pluginInitialize();
+        super.pluginInitialize();        
         TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
         FragmentManager supportFragmentManager= ((MainActivity) this.cordova.getActivity()).getSupportManager();
         receiver = tokenizationVisa.getReceiver(supportFragmentManager);
@@ -101,8 +101,9 @@ public class novosdk extends CordovaPlugin {
         
         try {
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
-            tokenizationVisa.unregisterBroadcastEvents(this.cordova.getActivity(),receiver);
-            tokenizationVisa.unregisterBroadcastNetwork(this.cordova.getActivity());
+            tokenizationVisa.clearNotification(this.cordova.getActivity(), receiver);
+            // tokenizationVisa.unregisterBroadcastEvents(this.cordova.getActivity(),receiver);
+            // tokenizationVisa.unregisterBroadcastNetwork(this.cordova.getActivity());
         }catch(Exception e){
 
         }
@@ -115,16 +116,18 @@ public class novosdk extends CordovaPlugin {
         TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
         tokenizationVisa.registerBroadcastEvents(this.cordova.getActivity(), receiver);
         tokenizationVisa.registerBroadcastNetworkReceiver((this.cordova.getActivity()));
+        tokenizationVisa.getConfigurations().asString(this.cordova.getActivity());
     }
 
     @Override
     public void onStop() {
         super.onStop();
         
-        try {
+        try {    
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
-            tokenizationVisa.unregisterBroadcastEvents(this.cordova.getActivity(),receiver);
-            tokenizationVisa.unregisterBroadcastNetwork(this.cordova.getActivity());
+            tokenizationVisa.clearNotification(this.cordova.getActivity(), receiver);
+            // tokenizationVisa.unregisterBroadcastEvents(this.cordova.getActivity(),receiver);
+            // tokenizationVisa.unregisterBroadcastNetwork(this.cordova.getActivity());
         }catch(Exception e){
 
         }
@@ -205,12 +208,15 @@ public class novosdk extends CordovaPlugin {
             JSONObject json = message.getJSONObject(0);            
 
             DataConfiguration dataConfiguration = gson.fromJson(json.toString(), DataConfiguration.class);
-            dataConfiguration.setCards(new ArrayList());
+            dataConfiguration.setCards(new ArrayList());            
 
-            TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
+            TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;            
             tokenizationVisa.enrollCardVisa(this.cordova.getActivity(), dataConfiguration, new TokenizationVisaCallback.VTSCallback() {
                 @Override
                 public void onSuccessResponse(ResponseTokenization responseTokenization) {
+                    ArrayList<DataTokenizationCard> cardsList = tokenizationVisa.getConfigurations().getVTSCards(cordova.getActivity());
+                    tokenizationVisa.getConfigurations().saveVTSFavoriteCard(cardsList.get(cardsList.size() - 1).getVProvisionedToken(), cordova.getActivity());
+
                     String result = gson.toJson(responseTokenization);
                     callbackContext.success(result);
                 }
@@ -221,7 +227,7 @@ public class novosdk extends CordovaPlugin {
                     callbackContext.error(result);
                 }
             });
-        } catch (Exception ex) {
+        } catch (Exception ex) {            
             callbackContext.error("enrollCardVisa=> " + ex);
         } 
     }
@@ -369,11 +375,11 @@ public class novosdk extends CordovaPlugin {
     private void deleteTokensByPan( JSONArray message, CallbackContext callbackContext ) {
 
         try {                  
-            Gson gson = new Gson();
-            JSONObject json = message.getJSONObject(0);            
+            Gson gson = new Gson();        
+            JSONObject json = message.getJSONObject(0);
 
-            String panCard = json.getString("panCard");            
-
+            String panCard = json.getString("panCard");    
+        
             TokenizationVisa tokenizationVisa = TokenizationVisa.INSTANCE;
             tokenizationVisa.deleteTokensByPan(panCard, this.cordova.getActivity(), new TokenizationVisaCallback.VTSCallback() {
                 @Override
@@ -383,7 +389,7 @@ public class novosdk extends CordovaPlugin {
                 }
 
                 @Override
-                public void onFailedResponse(ResponseTokenization responseTokenization) {
+                public void onFailedResponse(ResponseTokenization responseTokenization) {                    
                     String result = gson.toJson(responseTokenization);
                     callbackContext.error(result);
                 }
